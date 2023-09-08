@@ -11,12 +11,14 @@ int menorElementoRE(int arreglo[], int i, int validos);
 void mostrarArchivo();
 void cargarArchivo();
 int cargarUnArchivo();
+int recorrerArchvo(int menor, int i);
+int buscaMenorFACU(FILE* archi);
+void mostrarArchivoRE(FILE* archi, int i);
 
 int main()
 {
 
     int arreglo[30];
-    int total = 0;
 
     /* total = factorial(10);
      printf("El factorial es: %d\n", total);
@@ -44,10 +46,19 @@ int main()
     int menor = menorElementoRE(arreglo, 0, validos);
     printf("El menor es: %d", menor);*/
 
-    cargarArchivo();
-    mostrarArchivo();
+//   cargarArchivo();
+//
+    FILE* archi;
+//    archi = fopen("miArchivo.bin", "rb");
+//    int total = buscaMenorFACU(archi);
+//    fclose(archi);
+//    printf("EL MENOR ES: %d", total);
 
+    archi = fopen("miArchivo.bin", "rb");
+    mostrarArchivoRE(archi, 1);
+    fclose(archi);
 }
+
 
 int factorial(int numero)
 {
@@ -69,7 +80,6 @@ int factorial(int numero)
 
     return rta;
 }
-
 int ptencia (int base, int potencia)
 {
 
@@ -88,7 +98,6 @@ int ptencia (int base, int potencia)
 
     return rta;
 }
-
 int cargarArreglo(int arreglo[], int dim)
 {
 
@@ -111,7 +120,6 @@ int cargarArreglo(int arreglo[], int dim)
 
     return i;
 }
-
 void mostrarArregloRE(int arreglo[],int i,  int validos)
 {
 
@@ -127,8 +135,6 @@ void mostrarArregloRE(int arreglo[],int i,  int validos)
         mostrarArregloRE(arreglo, i+1, validos);
     }
 }
-
-
 void mostrarArregloREINV(int arreglo[],int i,  int validos)
 {
 
@@ -144,7 +150,6 @@ void mostrarArregloREINV(int arreglo[],int i,  int validos)
         mostrarArregloREINV(arreglo, i-1, validos);
     }
 }
-
 int capicuaRE (int arreglo[],int i, int validos)
 {
     if (i>=validos)
@@ -163,7 +168,6 @@ int capicuaRE (int arreglo[],int i, int validos)
         return 0;
     }
 }
-
 int sumaRecursiva(int arreglo[], int i, int validos)
 {
 
@@ -181,12 +185,9 @@ int sumaRecursiva(int arreglo[], int i, int validos)
     }
     return suma;
 }
-
-
 int menorElementoRE(int arreglo[], int i, int validos)
 {
 
-    int aux;
     int menor;
 
     if(i == validos-1)
@@ -216,16 +217,6 @@ int menorElementoRE(int arreglo[], int i, int validos)
 
     return menor;
 }
-
-void menorArchivo(){
-
-    FILE* archi;
-    archi = fopen("miArchivo.bin", "wb");
-
-
-
-}
-
 int cargarUnArchivo()
 {
 
@@ -237,26 +228,28 @@ int cargarUnArchivo()
     if(archi != NULL)
     {
 
-    printf("Ingresa un valor al archivo");
-    fflush(stdin);
-    scanf("%d", &num);
+        printf("Ingresa un valor al archivo");
+        fflush(stdin);
+        scanf("%d", &num);
 
-    fwrite(&num, sizeof(int), 1, archi);
+        fwrite(&num, sizeof(int), 1, archi);
 
-    fclose(archi);
+        fclose(archi);
     }
 
 }
-
 void cargarArchivo()
 {
+
+
 
     FILE* archi;
     archi = fopen("miArchivo.bin", "ab");
 
     char letra = 's';
 
-    if(archi != NULL){
+    if(archi != NULL)
+    {
         while(letra == 's')
 
         {
@@ -272,13 +265,29 @@ void cargarArchivo()
         fclose(archi);
     }
 }
-
-
-void mostrarArchivo()
+int buscaMenorFACU(FILE* archi)
 {
+    int aux, menor;
 
+    if(fread(&aux, sizeof(int), 1, archi) == 0)
+    {
+            fseek(archi, sizeof(int)*-1, SEEK_END);
+            fread(&menor, sizeof(int), 1, archi);
+    }
+    else
+    {
+        menor = buscaMenorFACU(archi);
+        if(aux < menor)
+        {
+            menor = aux;
+        }
+    }
+    return  menor;
+}
+void mostrarArchivo(char direc[])
+{
     FILE *archi;
-    archi = fopen("miArchivo.bin", "rb");
+    archi = fopen(direc, "rb");
     int num;
 
     if(archi != NULL)
@@ -298,3 +307,19 @@ void mostrarArchivo()
     }
 }
 
+void mostrarArchivoRE(FILE* archi, int i)
+{
+    int aux;
+
+        if(fread(&aux, sizeof(int), 1, archi) == 0)
+        {
+            printf("  FINAL ARCHIVO");
+        }
+        else
+        {
+            fseek(archi, sizeof(int) * (i-1), SEEK_SET);
+            fread(&aux, sizeof(int), 1, archi);
+            printf("/ %i ", aux);
+            mostrarArchivoRE(archi, i+1);
+        }
+}
