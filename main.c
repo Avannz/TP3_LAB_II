@@ -13,50 +13,130 @@ void cargarArchivo();
 int cargarUnArchivo();
 int recorrerArchvo(int menor, int i);
 int buscaMenorFACU(FILE* archi);
+int encontrarDatoRE(int arreglo[], int dato, int i);
+void mostrarCharRE(char letra);
 void mostrarArchivoRE(FILE* archi, int i);
 
 int main()
 {
 
     int arreglo[30];
+    int opc;
+    int total;
+    int validos;
+    int menor;
+    char letra;
+    int buscar;
+    int flag = 0;
 
-    /* total = factorial(10);
-     printf("El factorial es: %d\n", total);
+    printf(" * Ingresa el ejercicio: ");
+    fflush(stdin);
+    scanf("%i", &opc);
 
-     total = ptencia(6, 10);
-     printf("La potencia es: %d", total);
+    switch(opc)
+    {
 
-    int validos = cargarArreglo(arreglo, 20);
-    mostrarArregloRE(arreglo, 0, validos);
-    printf("\n\n");
-    mostrarArregloREINV(arreglo, validos-1, 0);
+    case 1:
 
-    capicuaRE(arreglo, 0, validos);
+        total = factorial(10);
+        printf("El factorial es: %d\n", total);
 
-    if (capicuaRE(arreglo, validos, 0)){
-        printf("es capicua");
-    } else {
-    printf("no es capicua");
+        break;
+
+    case 2:
+
+        total = ptencia(6, 10);
+        printf("La potencia es: %d", total);
+
+        break;
+
+    case 3:
+
+        validos = cargarArreglo(arreglo, 20);
+        mostrarArregloRE(arreglo, 0, validos);
+
+        break;
+
+    case 4:
+
+        validos = cargarArreglo(arreglo, 20);
+        mostrarArregloREINV(arreglo, validos-1, 0);
+
+        break;
+
+    case 5:
+
+        capicuaRE(arreglo, 0, validos);
+
+        if (capicuaRE(arreglo, validos, 0))
+        {
+            printf("es capicua");
+        }
+        else
+        {
+            printf("no es capicua");
+        }
+
+        break;
+
+    case 6:
+
+        total = sumaRecursiva(arreglo, 0, validos);
+
+        printf("El total de la suma es: %d", total);
+
+        break;
+
+    case 7:
+
+        menor = menorElementoRE(arreglo, 0, validos);
+        printf("El menor es: %d", menor);
+
+        break;
+
+    case 8:
+
+        cargarArchivo();
+
+        FILE* archi;
+        archi = fopen("miArchivo.bin", "rb");
+        total = buscaMenorFACU(archi);
+        fclose(archi);
+        printf("EL MENOR ES: %d", total);
+
+        break;
+
+    case 10:
+
+        archi = fopen("miArchivo.bin", "rb");
+        mostrarArchivoRE(archi, 1);
+        fclose(archi);
+
+        break;
+
+    case 11:
+
+        letra = 's';
+        mostrarCharRE(letra);
+
+        break;
+
+    case 12:
+
+        cargarArreglo(arreglo, 20);
+
+        printf("Ingresa el elemento a encontrar: ");
+        fflush(stdin);
+        scanf("%i", &buscar);
+
+       // encontrarElementoRE(arreglo, buscar, 0);
+
+       flag = encontrarDatoRE(arreglo, buscar, 0);
+
+       printf("FLAG = %d", flag);
+
+        break;
     }
-
-    total = sumaRecursiva(arreglo, 0, validos);
-
-    printf("El total de la suma es: %d", total);
-
-    int menor = menorElementoRE(arreglo, 0, validos);
-    printf("El menor es: %d", menor);*/
-
-//   cargarArchivo();
-//
-    FILE* archi;
-//    archi = fopen("miArchivo.bin", "rb");
-//    int total = buscaMenorFACU(archi);
-//    fclose(archi);
-//    printf("EL MENOR ES: %d", total);
-
-    archi = fopen("miArchivo.bin", "rb");
-    mostrarArchivoRE(archi, 1);
-    fclose(archi);
 }
 
 
@@ -271,8 +351,8 @@ int buscaMenorFACU(FILE* archi)
 
     if(fread(&aux, sizeof(int), 1, archi) == 0)
     {
-            fseek(archi, sizeof(int)*-1, SEEK_END);
-            fread(&menor, sizeof(int), 1, archi);
+        fseek(archi, sizeof(int)*-1, SEEK_END);
+        fread(&menor, sizeof(int), 1, archi);
     }
     else
     {
@@ -311,15 +391,65 @@ void mostrarArchivoRE(FILE* archi, int i)
 {
     int aux;
 
-        if(fread(&aux, sizeof(int), 1, archi) == 0)
-        {
-            printf("  FINAL ARCHIVO");
-        }
-        else
-        {
-            fseek(archi, sizeof(int) * (i-1), SEEK_SET);
-            fread(&aux, sizeof(int), 1, archi);
-            printf("/ %i ", aux);
-            mostrarArchivoRE(archi, i+1);
-        }
+    if(fread(&aux, sizeof(int), 1, archi) == 0)
+    {
+        printf("  FINAL ARCHIVO");
+    }
+    else
+    {
+        fseek(archi, sizeof(int) * (i-1), SEEK_SET);
+        fread(&aux, sizeof(int), 1, archi);
+        printf("/ %i ", aux);
+        mostrarArchivoRE(archi, i+1);
+    }
+}
+
+void mostrarCharRE(char letra)
+{
+
+    char carct;
+
+    if(letra == '*')
+    {
+
+    }
+    else
+    {
+
+        printf("Ingresa una letra: ");
+        fflush(stdin);
+        scanf("%c", &carct);
+
+        printf("Ingresa != '*': ");
+        fflush(stdin);
+        scanf("%c", &letra);
+
+        mostrarCharRE(letra);
+        printf("/ %c ", carct);
+    }
+}
+
+void encontrarElementoRE (int arreglo[], int buscar, int i)
+{
+
+    int flag = 0;
+
+    if(arreglo[i] == buscar)
+    {
+
+        flag = 1;
+    }
+    else
+    {
+        flag = 0;
+        encontrarElementoRE(arreglo, buscar, i+1);
+
+    }
+
+
+    if(flag == 1)
+    {
+
+        printf("Dato encontrado");
+    }
 }
